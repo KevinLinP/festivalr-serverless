@@ -2,7 +2,7 @@
   import { initializeApp } from "firebase/app"
   import { getFirestore, collection, getDocs } from 'firebase/firestore/lite'
 
-  let festivalName = ''
+  let festival = null
 
   const firebaseConfig = {
     apiKey: "AIzaSyDa0OU4foC1xhjQTko6PyaEbKYmw7pAEFQ",
@@ -15,14 +15,14 @@
   const app = initializeApp(firebaseConfig)
   const db = getFirestore(app)
 
-  const getFestivals = async function () {
+  const getFestival = async function () {
     const festivalsCol = collection(db, 'festivals')
     const festivalsSnapshot = await getDocs(festivalsCol)
     const festivals = festivalsSnapshot.docs.map(doc => doc.data())
-    festivalName = festivals[0].name
-  }
 
-  getFestivals()
+    festival = festivals[0]
+  }
+  getFestival()
 </script>
 
-<h1>{ festivalName }</h1>
+<h1>{ festival?.name || '' }</h1>
