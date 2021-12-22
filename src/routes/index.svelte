@@ -1,6 +1,6 @@
 <script>
   import { initializeApp } from "firebase/app"
-  import { getFirestore, collection, getDocs } from 'firebase/firestore/lite'
+  import { getFirestore, collection, getDocs, getDoc } from "firebase/firestore"
 
   let festival = null
 
@@ -18,11 +18,25 @@
   const getFestival = async function () {
     const festivalsCol = collection(db, 'festivals')
     const festivalsSnapshot = await getDocs(festivalsCol)
-    const festivals = festivalsSnapshot.docs.map(doc => doc.data())
+    const festivalDoc = festivalsSnapshot.docs[0]
 
-    festival = festivals[0]
+    festival = Object.assign(
+      {id: festivalDoc.id},
+      festivalDoc.data(),
+    )
+
+    console.log(festival)
   }
+
   getFestival()
 </script>
 
-<h1>{ festival?.name || '' }</h1>
+{#if festival}
+  <h1>{ festival?.name}</h1>
+
+  <ul>
+    {#each festival.artists as artist}
+      <li>{artist}</li>
+    {/each}
+  </ul>
+{/if}

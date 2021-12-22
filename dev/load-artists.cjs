@@ -33,27 +33,13 @@ class Importer {
     console.log({festivalName, artists})
 
     const festivalDoc = await this.getFestivalDoc({db, festivalName})
-    await this.findOrCreateArtists({db, festivalDoc, artists})
+    await db.collection('festivals').doc(festivalDoc.id).update({artists})
   }
 
   static async getFestivalDoc({db, festivalName}) {
     const ref = db.collection('festivals');
     const snapshot = await ref.where('name', '==', festivalName).get();
     return snapshot.docs[0]
-  }
-
-  static async findOrCreateArtists({db, festivalDoc, artists}) {
-    const artistsRef = db.collection('festivals').doc(festivalDoc.id).collection('artists')
-
-    artists.forEach(async (artistName) => {
-      const snapshot = await artistsRef.where('name', '==', artistName).get()
-
-      if (!snapshot.exists) {
-        artistsRef.add({
-          name: artistName
-        })
-      }
-    })
   }
 } 
 
